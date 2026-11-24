@@ -127,14 +127,14 @@ CloudComputing_Final/
 
 ## Roadmap
 
-- [ ] Repo setup
-- [ ] Hello-world site on S3 + Cloudflare, network and database
-- [ ] Sign-in, API Gateway and Lambda
-- [ ] Closet, uploads and AI tagging
-- [ ] Outfit recommendations and evaluation
-- [ ] Shopping picks
-- [ ] Virtual try-on
-- [ ] Demo
+1. Repo setup
+2. Hello-world site on S3 + Cloudflare, network and database
+3. Sign-in, API Gateway and Lambda
+4. Closet, uploads and AI tagging
+5. Outfit recommendations and evaluation
+6. Shopping picks
+7. Virtual try-on
+8. Demo
 
 ## Workflow
 
