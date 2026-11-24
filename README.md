@@ -1,6 +1,4 @@
-<div align="center">
-
-# 👕 AI Closet 👟
+# AI Closet
 
 ### Snap your clothes. Let AI sort them. Never ask "what do I wear?" again.
 
@@ -16,17 +14,15 @@
 ![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=flat-square&logo=cloudflare&logoColor=white)
 ![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=flat-square)
 
-[Features](#-features) · [Architecture](#-architecture) · [AI](#-how-the-ai-works) · [Security](#-security) · [Roadmap](#-roadmap) · [Workflow](#-workflow)
-
-</div>
+[Features](#features) · [Architecture](#architecture) · [AI](#how-the-ai-works) · [Security](#security) · [Roadmap](#roadmap) · [Workflow](#workflow)
 
 ---
 
 > [!NOTE]
-> **🚧 Setup phase.** Everything below is the planned design. No app code or cloud
+> **Setup phase.** Everything below is the planned design. No app code or cloud
 > resources exist yet.
 
-## 💡 What is it?
+## What is it?
 
 AI Closet is a single-page app for your wardrobe. Photograph each piece, let AI tag it,
 then tell the app where you are going. It builds outfits from clothes **you already own**.
@@ -34,61 +30,55 @@ then tell the app where you are going. It builds outfits from clothes **you alre
 It is also a cloud project: every tier is **wired by hand in the AWS Console**, with no
 Amplify and no other PaaS.
 
-## ✨ Features
+## Features
 
-| | Feature | What it does | Scope |
-|:-:|---|---|:-:|
-| 📸 | **Smart upload** | Resizes photos in the browser and strips location data | Required |
-| 🏷️ | **AI tagging** | Detects category, colors, pattern, formality, warmth and more | Required |
-| ✏️ | **You have the last word** | Correct any tag, or add a piece with no photo | Required |
-| 👔 | **Outfit builder** | Matches your occasion and the weather | Required |
-| 💾 | **Saved outfits** | Save, reject, or mark an outfit as worn | Required |
-| 🛍️ | **Shopping picks** | Suggests pieces from a curated catalog | Bonus |
-| 🪞 | **Virtual try-on** | AI visualization of an outfit, not a fit guarantee | Stretch |
+| Feature | What it does | Scope |
+|---|---|:-:|
+| **Smart upload** | Resizes photos in the browser and strips location data | Required |
+| **AI tagging** | Detects category, colors, pattern, formality, warmth and more | Required |
+| **You have the last word** | Correct any tag, or add a piece with no photo | Required |
+| **Outfit builder** | Matches your occasion and the weather | Required |
+| **Saved outfits** | Save, reject, or mark an outfit as worn | Required |
+| **Shopping picks** | Suggests pieces from a curated catalog | Bonus |
+| **Virtual try-on** | AI visualization of an outfit, not a fit guarantee | Stretch |
 
-## 🏗️ Architecture
+## Architecture
 
 ```mermaid
 flowchart LR
-    U["🧑 Browser"] --> CF["🛡️ Cloudflare<br/>DNS, CDN, WAF"]
-    CF --> WEB["🪣 S3 website<br/>React app"]
-    CF --> GW["🚪 API Gateway<br/>JWT authorizer"]
-    U --> COG["🔑 Cognito<br/>Email and Google"]
-    COG --> TS["🤖 turnstile Lambda"]
+    U["Browser"] --> CF["Cloudflare: DNS, CDN, WAF"]
+    CF --> WEB["S3 website: React app"]
+    CF --> GW["API Gateway: JWT authorizer"]
+    U --> COG["Cognito: Email and Google"]
+    COG --> TS["turnstile Lambda"]
     TS --> SV["Cloudflare siteverify"]
-    GW --> API["⚡ api Lambda<br/>in VPC"]
-    GW --> AI["⚡ ai Lambda"]
-    API --> DB[("🐘 RDS PostgreSQL<br/>private")]
+    GW --> API["api Lambda: in VPC"]
+    GW --> AI["ai Lambda"]
+    API --> DB[("RDS PostgreSQL: private")]
     AI --> API
-    AI --> OAI["🧠 OpenAI"]
-    U --> PH["🪣 S3 photos<br/>private"]
-    PH --> Q["📬 SQS"]
-    Q --> W["⚡ worker Lambda"]
-    Q --> DLQ["☠️ Dead-letter queue"]
+    AI --> OAI["OpenAI"]
+    U --> PH["S3 photos: private"]
+    PH --> Q["SQS"]
+    Q --> W["worker Lambda"]
+    Q --> DLQ["Dead-letter queue"]
     W --> OAI
     W --> API
 ```
 
-<details>
-<summary><b>🧰 Full stack</b></summary>
-<br>
+### Full stack
 
 | Tier | Choice | Job |
 |---|---|---|
-| 🎨 Frontend | React + Vite on S3 | Static single-page app |
-| 🛡️ Edge | Cloudflare | DNS, CDN, HTTPS, WAF, Turnstile |
-| 🚪 API | API Gateway (HTTP API) | Routing, throttling, JWT checks |
-| ⚡ Compute | AWS Lambda (Python) | `api`, `ai`, `worker`, `turnstile` |
-| 🔑 Auth | Cognito | Email/password and Google OAuth |
-| 🐘 Database | RDS PostgreSQL + pgvector | Closet data and embeddings |
-| 📬 Queue | SQS + dead-letter queue | Photo tagging and try-on jobs |
-| 🧠 ML API | OpenAI | Tagging, embeddings, explanations, try-on |
+| Frontend | React + Vite on S3 | Static single-page app |
+| Edge | Cloudflare | DNS, CDN, HTTPS, WAF, Turnstile |
+| API | API Gateway (HTTP API) | Routing, throttling, JWT checks |
+| Compute | AWS Lambda (Python) | `api`, `ai`, `worker`, `turnstile` |
+| Auth | Cognito | Email/password and Google OAuth |
+| Database | RDS PostgreSQL + pgvector | Closet data and embeddings |
+| Queue | SQS + dead-letter queue | Photo tagging and try-on jobs |
+| ML API | OpenAI | Tagging, embeddings, explanations, try-on |
 
-</details>
-
-<details>
-<summary><b>🤔 Design choices</b></summary>
-<br>
+### Design choices
 
 - **No NAT Gateway.** Lambdas that call OpenAI stay outside the VPC and reach the
   database through the `api` Lambda.
@@ -96,13 +86,11 @@ flowchart LR
   try-on run as background jobs.
 - **Safe to retry.** A duplicate upload event never creates a second garment.
 
-</details>
-
-## 🧠 How the AI works
+## How the AI works
 
 ```mermaid
 flowchart LR
-    A["1️⃣ Intent"] --> B["2️⃣ Retrieve"] --> C["3️⃣ Generate"] --> D["4️⃣ Rank"] --> E["5️⃣ Re-rank"] --> F["6️⃣ Explain"]
+    A["Intent"] --> B["Retrieve"] --> C["Generate"] --> D["Rank"] --> E["Re-rank"] --> F["Explain"]
 ```
 
 | Step | What happens | Powered by |
@@ -118,41 +106,41 @@ flowchart LR
 > **OpenAI never picks the winner.** Our own code ranks outfits, so the same closet,
 > constraints, history and versions always give the same result.
 
-## 🔒 Security
+## Security
 
-- 🪪 Every user-data query is filtered by the signed-in user
-- 🐘 The database is not reachable from the internet
-- 🖼️ Photos stay in a private bucket behind signed URLs
-- 🤖 Turnstile is checked on the server, not just in the browser
-- 🚧 Requests that skip Cloudflare are rejected
-- 🗝️ Secrets stay out of the code
+- Every user-data query is filtered by the signed-in user
+- The database is not reachable from the internet
+- Photos stay in a private bucket behind signed URLs
+- Turnstile is checked on the server, not just in the browser
+- Requests that skip Cloudflare are rejected
+- Secrets stay out of the code
 
-## 📁 Project layout
+## Project layout
 
 ```
-📦 CloudComputing_Final
-├── 📚 docs/        architecture, API, demo script
-├── ☁️ cloud/       one AWS Console guide per tier, plus policies
-├── ⚙️ backend/     ai_core/, functions/, db/, evals/, tests/
-└── 🎨 frontend/    React + Vite app
+CloudComputing_Final/
+├── docs/        architecture, API, demo script
+├── cloud/       one AWS Console guide per tier, plus policies
+├── backend/     ai_core/, functions/, db/, evals/, tests/
+└── frontend/    React + Vite app
 ```
 
-## 🗺️ Roadmap
+## Roadmap
 
-- [ ] 🧱 Repo setup
-- [ ] 🌐 Hello-world site on S3 + Cloudflare, network and database
-- [ ] 🔑 Sign-in, API Gateway and Lambda
-- [ ] 📸 Closet, uploads and AI tagging
-- [ ] 👔 Outfit recommendations and evaluation
-- [ ] 🛍️ Shopping picks
-- [ ] 🪞 Virtual try-on
-- [ ] 🎬 Demo
+- [ ] Repo setup
+- [ ] Hello-world site on S3 + Cloudflare, network and database
+- [ ] Sign-in, API Gateway and Lambda
+- [ ] Closet, uploads and AI tagging
+- [ ] Outfit recommendations and evaluation
+- [ ] Shopping picks
+- [ ] Virtual try-on
+- [ ] Demo
 
-## 🌿 Workflow
+## Workflow
 
 ```mermaid
 flowchart LR
-    I["📝 Issue"] --> T["🌱 Topic branch"] -->|PR| S["🧪 staging"] -->|PR| M["🚀 main"]
+    I["Issue"] --> T["Topic branch"] -->|PR| S["staging"] -->|PR| M["main"]
 ```
 
 1. Open an issue.
@@ -162,8 +150,4 @@ flowchart LR
 
 ---
 
-<div align="center">
-
-**Built for CS 686 Cloud Computing at the University of San Francisco** 🌉
-
-</div>
+**Built for CS 686 Cloud Computing at the University of San Francisco**
