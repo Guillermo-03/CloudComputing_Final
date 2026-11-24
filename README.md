@@ -14,7 +14,7 @@
 ![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=flat-square&logo=cloudflare&logoColor=white)
 ![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=flat-square)
 
-[Features](#features) · [Architecture](#architecture) · [AI](#how-the-ai-works) · [Security](#security) · [Roadmap](#roadmap) · [Workflow](#workflow)
+[Features](#features) · [Architecture](#architecture) · [AI](#how-the-ai-works) · [Security](#security) · [Roadmap](#roadmap)
 
 ---
 
@@ -135,18 +135,6 @@ CloudComputing_Final/
 6. Shopping picks
 7. Virtual try-on
 8. Demo
-
-## Workflow
-
-```mermaid
-flowchart LR
-    I["Issue"] --> T["Topic branch"] -->|PR| S["staging"] -->|PR| M["main"]
-```
-
-1. Open an issue.
-2. Branch from `staging` using `feat/`, `fix/`, `chore/`, `docs/` or `refactor/`.
-3. Open a PR into `staging`.
-4. A human promotes `staging` to `main`.
 
 ---
 
