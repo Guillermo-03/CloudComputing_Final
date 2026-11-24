@@ -2,10 +2,6 @@
 
 ### Snap your clothes. Let AI sort them. Never ask "what do I wear?" again.
 
-![Status](https://img.shields.io/badge/status-setup-orange?style=for-the-badge)
-![Course](https://img.shields.io/badge/CS_686-Cloud_Computing-00543C?style=for-the-badge)
-![No PaaS](https://img.shields.io/badge/PaaS-none-red?style=for-the-badge)
-
 ![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
