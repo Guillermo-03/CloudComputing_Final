@@ -221,3 +221,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Claude rules stay local (public repo)
+/Claude_Rules/
+/.claude/
+/CLAUDE.md
