@@ -55,6 +55,5 @@ Launch Claude Code from this folder so the rules load.
 
 - `CLAUDE.md`: project facts and rules
 - `.claude/`: the live skills, agent and guardrail hooks
-- `Claude_Rules/`: the source kit; changes here do not update `.claude/`
 
 Test the hooks with `sh .claude/hooks/test_hooks.sh`.

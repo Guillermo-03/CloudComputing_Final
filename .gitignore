@@ -221,3 +221,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Claude rules: source kit stays local (public repo); keep the installed build skill
+/Claude_Rules/
+!/.claude/skills/build/
